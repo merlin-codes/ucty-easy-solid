@@ -1,0 +1,226 @@
+.ucet {
+    max-width: 250px;
+    min-width: 200px;
+    background: #2a2a2a;
+    padding: 5px 15px;
+    margin: 5px;
+}
+.ucet div {
+    display: flex;
+
+}
+.ucet div.high {
+    justify-content: space-between;
+}
+.sub {
+    display: flex;
+    flex-direction: column;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+    width: 6em;
+}
+.row p{
+    margin: 5px 0;
+    color: #aaa;
+}
+.granade {
+    background: black;
+    width: 1px;
+    margin: 20px;
+}
+body {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    margin: 0;
+    overflow-x: hidden; 
+}
+
+.btn_dark:hover {
+    background-color: #ddd;
+}
+.btn_dark {
+    background-color: #eee;
+    color: #000;
+}
+.disk_box {
+    display: flex;
+    flex-basis: | auto;
+    flex-wrap: wrap;
+    margin-left: 350px;
+}
+.body {
+    min-width: 100vw;
+    min-height: 100vh;
+    color: white;
+    background: #202020;
+}
+.white {
+    background-color: #fff !important;
+}
+.white_sel {
+    background-color: #ddd !important;
+}
+.ucet .white, .ucet .white_sel {
+    color: black;
+}
+.opt_selected {
+    background-color: #aaa;
+}
+.white .row p, .white_sel .row p {
+    color: black;
+}
+.white .selected p, .white_sel .selected p {
+    color: #f00 !important;
+}
+.white_btn {
+    background-color: #ddd !important;
+    color: black;
+}
+.body_dark {
+    min-width: 100vw;
+    min-height: 100vh;
+    color: black;
+    background: #f0f0f0;
+}
+.rozvaha {
+    width: 30vw;
+    padding: 0 20px;
+    margin: 5px 10px;
+    max-width: 300px;
+    background-color: #333;
+    height: 100vh;
+    position: fixed;
+    min-width: min-content;
+}
+.rovaha * {
+    text-align: center;
+}
+.ucet .super {
+    justify-content: space-between;
+}
+.ucet .super p {
+    margin: 5px 0;
+}
+.vr_t {
+    border-top: 3px solid whitesmoke;
+}
+.vr_b {
+    border-bottom: 3px solid whitesmoke;
+}
+.opt:hover {
+    background-color: #777;
+}
+.opt button{
+    font-size: 20px;
+    padding: 20% 5px !important;
+    margin: 0;
+}
+.opt button.hide {
+    display: none;
+}
+.selected p{
+    color: #ff8888 !important;
+}
+.p58 {
+    padding: 60% 8px !important;
+}
+table, tbody {
+    padding: 0;
+    border: 0 solid white;
+    border-spacing: 0;
+}
+div.between {
+    display: flex;
+}
+.cost {
+    width: 4em;
+}
+.opt:hover p.cost {
+    display: flex;
+}
+.bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.bottom p {
+    justify-content: space-between;
+    display: flex;
+    margin: 5px;
+}
+.bottom button {
+    width: 100%;
+}
+.bottom button:hover {
+    cursor: pointer;
+}
+.snav {
+    background: #000;
+}
+.b_sel {
+    background: #000;
+}
+.opt:hover {
+    cursor: pointer;
+}
+input, button {
+    color: #fff;
+    text-align: center;
+    background-color: #444;
+    border: 0;
+    padding: 5px;
+}
+.col {
+    width: 30px;
+}
+.col_lg {
+    width: 100px
+}
+.rozvaha .show {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    padding-right: 2.5px;
+    height: 50%;
+}
+.opt button.btn_dark:hover {
+    background: #ccc;
+}
+.opt button:hover {
+    background: #a22;
+    cursor: pointer;
+}
+.nav {
+    font-weight: bold;
+    padding: 0 40px 0 10px;
+    text-align: center;
+}
+.nav * {
+    text-align: center !important;
+}
+.side_acc {
+    width: 50px;
+    text-align: center;
+}
+.nav *, .opt * {
+    text-align: right;
+}
+.App {
+  text-align: center;
+}
+
+.App_logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+.m0 {
+    margin: 0;
+}
+
+.between {
+    width: 40px;
+    min-width: 40px;
+}

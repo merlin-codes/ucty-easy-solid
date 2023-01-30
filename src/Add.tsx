@@ -3,7 +3,7 @@ import { SetStoreFunction } from "solid-js/store/types"
 import { OHT, Operation, OperationHistory, OT } from "./type"
 import styles from './App.module.css';
 import { DataList } from "./datalist";
-import { money } from "./util";
+import { money_pre, money } from "./util";
 
 type AddProps = {
     setOpts: SetStoreFunction<Operation[]>,
@@ -26,6 +26,7 @@ export const Add: Component<AddProps> = (props) => {
     const [value, setValue] = createSignal<BASE_ADD>({cost: "", md: "", d: ""});
     const [edit, setEdit] = createSignal(false);
     const [DPH, setDPH] = createSignal([false, false]);
+    const [DPH_VALUE, setDPHValue] = createSignal(21);
     
     function changeSide(e: Event, x: OT) {
         e.stopPropagation();
@@ -50,6 +51,7 @@ export const Add: Component<AddProps> = (props) => {
     const chCost = (e: Event) => changeSide(e, OT.COST);
     const chD = (e: Event) => changeSide(e, OT.D);
 
+    createEffect(() =>  scroll_down())
     createEffect(() => {
         if (props.selected() == -1) {
             setValue({cost: "", md: "", d: ""})
@@ -60,11 +62,12 @@ export const Add: Component<AddProps> = (props) => {
         setValue({cost: String(v.cost), md: v.md, d: v.d})
     }, [props.selected])
 
-    createEffect(() => {
-        let e = document.getElementsByClassName("show")[0];
+    function scroll_down() {
+        let e = document.getElementById("taxer");
         if (e == undefined) return;
-        e.scrollTo(0, e.scrollHeight);
-    }, [props.opt]);
+        e.scroll(0, e.scrollHeight);
+    }
+    createEffect(scroll_down, [props.opt, props.h]);
     
     function editIt() {
         let opts = props.opt;
@@ -79,7 +82,8 @@ export const Add: Component<AddProps> = (props) => {
     }
     function genNum(cost: number) { return {cost: cost, md: value().md, d: value().d}; }
     function addIt() {
-        const cost = parseInt(value().cost);
+        const sect = parseInt((value().cost.split(/[,.]/)[1] || "00").substring(0,2)) || 0 ;
+        const cost = parseInt(value().cost)*100 + sect;
         let md = value().md
         let d = value().d
 
@@ -88,23 +92,28 @@ export const Add: Component<AddProps> = (props) => {
         md = md.substring(0, 3);
         d = d.substring(0, 3);
 
-        let opts = [genNum(parseInt(value().cost))]
+        let opts = [genNum(cost)]
         props.sh([...props.h, {type: OHT.ADD, old: {md: "", d: "", cost: 0}}])
 
         if (DPH()[0] || DPH()[1]) {
-            let opt = genNum(parseInt(value().cost) * 0.21 || 0);
-            if (DPH()[0]) opt.md = "343";
+            let opt = genNum(cost * (DPH_VALUE()/100) || 0);
+            if (DPH()[0]) opt.md = "343⁣";
             else opt.d = "343";
             opts.push(opt)
             props.sh([...props.h, {type: OHT.ADD, old: {md: "", d: "", cost: 0}}])
         }
+        setDPHValue(21);
         batch(() => {
             for(let i=0; i<opts.length; i++) 
                 props.setOpts(props.opt.length, opts[i])
             setValue({cost: "", md: "", d: ""});
             setDPH([false, false]);
         })
+        scroll_down();
     }
+    createEffect(() => {
+        console.log(DPH_VALUE())
+    }, [DPH_VALUE]);
     const execute = () => edit() ? editIt() : addIt();
 
     return (
@@ -112,7 +121,7 @@ export const Add: Component<AddProps> = (props) => {
             <DataList /><datalist id="empty"></datalist>
             <p>
                 <label for="cost">Cena</label>
-                {value().cost != "" ? money(value().cost) : ""}
+                {value().cost != "" ? edit() ? money(value().cost) : money_pre(value().cost) : ""}
                 <input autocomplete="off" class={props.theme ? styles.col_lg: styles.col_lg+" "+styles.white_btn} id="cost" placeholder="Cena"
                 value={value().cost} onInput={chCost} />
             </p>
@@ -120,7 +129,11 @@ export const Add: Component<AddProps> = (props) => {
                 <label for="md">MD</label>
                 <span hidden={edit()}>
                     <input type="checkbox" name="mdon" id="permd" checked={DPH()[0]} onChange={_ => setDPH([!DPH()[0], false])}/>
-                    <label for="permd">DPH</label>
+                    <select hidden={!DPH()[0]} value={DPH_VALUE()} onChange={e => setDPHValue(e.target?.value || 0)}>
+                        <option value="21" selected={DPH_VALUE() == 21}>21 %</option>
+                        <option value="15" selected={DPH_VALUE() == 15}>15 %</option>
+                        <option value="10" selected={DPH_VALUE() == 10}>10 %</option>
+                    </select>
                 </span>
                 <input autocomplete="off" list="account-UCTO" class={props.theme ? styles.col_lg: styles.col_lg+" "+styles.white_btn} placeholder="MD"
                 id="md" value={value().md} onInput={e => chMD(e)}/>
@@ -129,7 +142,11 @@ export const Add: Component<AddProps> = (props) => {
                 <label for="d">D</label>
                 <span hidden={edit()}>
                     <input type="checkbox" name="don" id="perd" checked={DPH()[1]} onChange={_ => setDPH([false, !DPH()[1]])}/>
-                    <label for="perd">DPH</label>
+                    <select hidden={!DPH()[1]} value={DPH_VALUE()} onChange={e => setDPHValue(e.target?.value || 0)}>
+                        <option value="21" selected={DPH_VALUE() == 21}>21 %</option>
+                        <option value="15" selected={DPH_VALUE() == 15}>15 %</option>
+                        <option value="10" selected={DPH_VALUE() == 10}>10 %</option>
+                    </select>
                 </span>
                 <input autocomplete="off" list="account-UCTO" class={props.theme ? styles.col_lg: styles.col_lg+" "+styles.white_btn} placeholder="D"
                 id="d" value={value().d} onInput={e => chD(e)} />

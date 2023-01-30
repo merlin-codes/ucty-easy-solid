@@ -10,7 +10,7 @@ export type Operation = {
 export type OperationHistory = {
     type: OHT,
     old: Operation,
-    i?: number,
+    i: number,
     m?: MOVE
 }
 export type AccountSides = {
@@ -19,7 +19,6 @@ export type AccountSides = {
 }
 export type Account = {
     name: string,
-    over: []
     md: AccountSides[],
     d: AccountSides[]
 }

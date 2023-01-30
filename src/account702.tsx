@@ -1,5 +1,6 @@
 import { Component, createEffect, createSignal, For } from "solid-js";
 import styles from './App.module.css';
+import { AccountsList } from "./datalist";
 import { Account, OT } from "./type";
 import { CAL, money } from "./util";
 
@@ -17,7 +18,7 @@ type SideAcc710 = {
     cost: string
 }
 
-export const Account710: Component<AccountProps> = (props) => {
+export const Account702: Component<AccountProps> = (props) => {
     const [is, setIs] = createSignal(false);
     const [gone, setGone] = createSignal(2);
     const [acp, setAcc] = createSignal<Acc710>({md: [], d: []})
@@ -27,17 +28,19 @@ export const Account710: Component<AccountProps> = (props) => {
         let acc: Acc710 = {md: [], d: []}
         for (let i=0; i<props.acc.length; i++) {
             let x = props.acc[i];
-            if (x.name.startsWith("5")) {
-                let total = x.md.reduce((sum, curr) => sum+curr.cost, 0);
-                total -= x.d.reduce((sum, curr) => sum+curr.cost, 0);
-                if (total != 0) 
-                    acc.md.push({name: x.name, cost: String(total)})
-            } else if (x.name.startsWith("6")) {
-                let total = x.d.reduce((sum, curr) => sum+curr.cost, 0);
-                total -= x.md.reduce((sum, curr) => sum+curr.cost, 0);
-                if (total != 0) 
-                    acc.d.push({name: x.name, cost: String(total)})
-            }
+            // check on what side it would be
+            AccountsList.map(aco => {
+                if (x.name.includes(aco.name) && !x.name.startsWith("5") && !x.name.startsWith("6")) {
+                    let calculate = 0;
+                    if (x.md) calculate += (x.md.reduce((a,b) => a+b.cost, 0) * (aco.type ? 1 : -1));
+                    if (x.d) calculate -= (x.d.reduce((a,b) => a+b.cost, 0) * (aco.type ? 1 : -1));
+
+                    if (aco.type)
+                        acc.md.push({name: x.name, cost: String(calculate)})
+                    else acc.d.push({name: x.name, cost: String(calculate)})
+                }
+            })
+            // console.log("acc:", acc)
         }
         setAcc(acc)
         return 0
@@ -65,7 +68,7 @@ export const Account710: Component<AccountProps> = (props) => {
         <div class={styles.ucet+" "+(props.theme ? "":styles.white)} id="main_suck">
             <div class={styles.super}>
                 <p>MD</p>
-                <p>710</p>
+                <p>702</p>
                 <p>D</p>
             </div>
             <hr/>

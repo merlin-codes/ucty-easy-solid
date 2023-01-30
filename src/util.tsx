@@ -9,17 +9,39 @@ export function createLocal<T extends object>(name: string, init: T): [Store<T>,
     createEffect(() => (localStorage.setItem(name, JSON.stringify(state))));
     return [state, setState];
 }
+
 export function removeLocal<T>(array: readonly T[], index: number): T[] {
     return [...array.slice(0, index), ...array.slice(index+1)];
 }
 export function money(n: string) {
-     let ans = "";
-     var edit_number = String(parseInt(n));
+    let cox = parseInt(n)%100 || 0 ;
+    if (cox < 0 ) cox *= -1;
+    let nl = Math.floor(parseInt(n)/100) || 0;
+    let ans = "";
+    var edit_number = String(nl);
 
-     for (let i=edit_number.length; i>0; i-=3) {
-         ans = edit_number.substring(i-3, i) + "\u00a0" + ans;
-     }
-     return ans.trim();
+    for (let i=edit_number.length; i>0; i-=3) {
+     ans = edit_number.substring(i-3, i) + "\u00a0" + ans;
+    }
+    if (n.length < 1 || n.trim() == "0") return "";
+    return ans.trim()+"."+cox+String.fromCharCode(160)+",-";
+}
+
+export function money_pre(n: string) {
+    let cox = "";
+    if (n.includes(".")){
+        cox = "."+n.split(".")[1];
+    } else if (n.includes(",")) {
+        cox = "."+n.split(",")[1];
+    }
+    let ans = "";
+    var edit_number = String(parseInt(n));
+
+    for (let i=edit_number.length; i>0; i-=3) {
+     ans = edit_number.substring(i-3, i) + "\u00a0" + ans;
+    }
+    if (n.length < 1 || n.trim() == "0") return "";
+    return ans.trim()+cox+String.fromCharCode(160)+",-";
 }
 
 function check_side(sides: AccountSides[], i: number, cost: number) {
@@ -27,17 +49,19 @@ function check_side(sides: AccountSides[], i: number, cost: number) {
     else sides = [{i: i, cost: cost}];
     return sides;
 }
+
 function check_first(accs: Account[], opt: Operation, i: number): [Account[], boolean[]] {
     let is_there = [false, false];
     for (let j=0; j<accs.length; j++) {
-        if (accs[j].name == opt.md) {
+        if (accs[j].name.substring(0,3) == opt.md.substring(0,3)) {
             accs[j].md = check_side(accs[j].md, i, opt.cost);
             is_there[0] = true;
         }
-        if (accs[j].name == opt.d) {
+        if (accs[j].name.substring(0,3) == opt.d.substring(0,3)) {
             accs[j].d = check_side(accs[j].d, i, opt.cost);
             is_there[1] = true;
         }
+
     }
     return [accs, is_there];
 }
@@ -70,13 +94,21 @@ export function checkOperations(opts: Operation[]) {
     return accounts;
 }
 export function move(opts: Operation[], n: number | undefined, n1: MOVE | undefined): Operation[] {
+    console.log(" is it", opts, n, n1)
     if (n == undefined || n1 == undefined || 
-        n1 == MOVE.UP && n == opts.length || 
+        n1 == MOVE.UP && n == opts.length-1 || 
         n1 == MOVE.DOWN && n == 0)  return opts;
-
     let opts_new = [...opts];
-    let opt_new = opts_new[n+n1];
-    opts_new[n+n1] = opts_new[n];
-    opts_new[n] = opt_new;
+    let opt;
+    if (n1 == MOVE.DOWN) {
+        opt = opts_new[n-1]
+        opts_new[n-1] = opts_new[n]
+    } else {
+        opt = opts_new[n+1]
+        opts_new[n+1] = opts_new[n]
+    }
+    opts_new[n] = opt;
+
+    console.log(opts_new, opt);
     return opts_new;
 }

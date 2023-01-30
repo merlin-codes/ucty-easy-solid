@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, For } from "solid-js"
+import { Accessor, Component, createEffect, createSignal, For } from "solid-js"
 import { Account, AccountSides, OT } from "./type"
 import styles from './App.module.css';
 import { money } from "./util";
@@ -7,14 +7,15 @@ type AccountProps = {
     acc: Account,
     i: number,
     s: number
-    theme: Boolean
+    theme: Boolean,
+    hidden: Boolean,
 }
 
 /*
  * Last Problem is that selecting option sometimes makes Account show in bad way
 */
 
-export const AccountComponent: Component<AccountProps>= (props) => {
+export const AccountComponent: Component<AccountProps> = (props) => {
     const [is, setIs] = createSignal(false);
     const [gone, setGone] = createSignal(2);
     const [hidden, setHidden] = createSignal(false);
@@ -48,7 +49,7 @@ export const AccountComponent: Component<AccountProps>= (props) => {
     const not_show = ["5", "6"];
     createEffect(() => {
         for (let i=0; i<not_show.length; i++)
-            if (props.acc.name && props.acc.name.startsWith(not_show[i]))
+            if (props.acc.name && props.acc.name.startsWith(not_show[i]) || props.hidden)
                 setHidden(true)
     }, [])
     createEffect(() => {
@@ -70,76 +71,80 @@ export const AccountComponent: Component<AccountProps>= (props) => {
 
     function check_list(t: OT) {
         try {
-            if (t == OT.MD)
-                if (props.acc.md)
-                    return money(String(props.acc.md.map(md => md.cost)
-                        .reduce((a,b) => Number(a)+Number(b) , 0))) || 0
-            else 
-                if (props.acc.d) {
-                     let cost = money(String(props.acc.d.map(d => d.cost)
-                        .reduce((a,b) => Number(a)+Number(b) , 0))) || 0
-                    console.log("Cost:",cost)
-                    return cost;
-                }
-        } catch(e) {return 0}
-        console.log("ttt",t)
+            if (t == OT.MD && props.acc.md)
+                return money(String(props.acc.md.map(md => md.cost)
+                    .reduce((a,b) => Number(a)+Number(b) , 0))) || 0
+            else if (props.acc.d)
+                 return money(String(props.acc.d.map(d => d.cost)
+                    .reduce((a,b) => Number(a)+Number(b) , 0))) || 0
+        } catch(e) {
+            return "";
+        }
+    }
+    function hide(e: Event) {
+        e.stopPropagation();
+        setHidden(!hidden())
     }
 
     return (
-        <div hidden={hidden()} class={styles.ucet} id={"main_"+props.i}>
-            <div class={styles.super}>
+        <div class={styles.ucet} id={"main_"+props.i}>
+            <div onClick={e => hide(e)} class={styles.hover + " " + styles.super}>
                 <p>MD</p>
                 <p>{props.acc.name}</p>
                 <p>D</p>
             </div>
             <hr/>
-            <div class={styles.high}>
-                <div class={styles.sub}>
+            <div hidden={hidden()} class={styles.high}>
+                <div class={styles.sub} >
+                    { hidden() ? <div></div> :
                     <For each={props.acc.md}>
                         {(md) => (
                             <div class={(props.s == md.i ? styles.selected : "")+" "+styles.row}>
                                 <p>{md.i+1})&nbsp;</p>
-                                <p>&nbsp;{money(String(md.cost))},-</p>
+                                <p>&nbsp;{money(String(md.cost))}</p>
                             </div>
                         )}
                     </For>
+                    }
                 </div>
                 <div class={styles.grade}></div>
                 <div class={styles.sub + ""}>
+                    { hidden() ? <div></div> :
                     <For each={props.acc.d}>
                         {(d) => (
                             <div class={(props.s == d.i ? styles.selected : "")+" "+styles.row}>
                                 <p>{d.i+1})&nbsp;</p>
-                                <p>&nbsp;{money(String(d.cost))},-</p>
+                                <p>&nbsp;{money(String(d.cost))}</p>
                             </div>
                         )}
                     </For>
+                    }
                 </div>
             </div>
-            <hr/>
-            <div class={styles.high}>
+            <hr hidden={hidden()} />
+            <div hidden={hidden()} class={hidden() ? styles.dnone: styles.high}>
                 <div class={styles.sub}>
                     <div class={styles.row}>
-                        <p>&nbsp;</p> <p>&nbsp;{check_list(OT.MD)},-</p>
+                        <p>&nbsp;</p> <p>&nbsp;{hidden() ? "": check_list(OT.MD)}</p>
                     </div>
                 </div>
                 <div class={styles.grade}>
                 </div>
                 <div class={styles.sub}>
                     <div class={styles.row}>
-                        <p>&nbsp;</p> <p>&nbsp;{check_list(OT.D)},-</p>
+                        <p>&nbsp;</p> <p>&nbsp;{hidden() ? "": check_list(OT.D)}</p>
                     </div>
                 </div>
             </div>
-            <hr hidden={gone() == 2}/>
+            <hr hidden={gone() == 2 || hidden()}/>
             <div class={styles.high} hidden={gone() == 2}>
                 <div class={styles.sub}>
-                    <p class={styles.m0}> { gone() == 1 ? money(String(overall()))+",-": String.fromCharCode(160) } </p>
+                    <p class={styles.m0}> { gone() == 1 ? money(String(overall())): String.fromCharCode(160) } </p>
                 </div>
                 <div class={styles.grade}>
                 </div>
                 <div class={styles.sub}>
-                    <p class={styles.m0}> { gone() == 0 ? money(String(overall()))+",-": String.fromCharCode(160) } </p>
+                    <p class={styles.m0}> { gone() == 0 ? money(String(overall())): String.fromCharCode(160) } </p>
                 </div>
             </div>
         </div>)

@@ -2,6 +2,7 @@ import { Accessor, Component, createEffect, createSignal, For } from "solid-js"
 import { Account, AccountSides, OT } from "./type"
 import styles from './App.module.css';
 import { money } from "./util";
+import { AccountsList } from './datalist';
 
 type AccountProps = {
     acc: Account,
@@ -20,6 +21,7 @@ export const AccountComponent: Component<AccountProps> = (props) => {
     const [gone, setGone] = createSignal(2);
     const [hidden, setHidden] = createSignal(false);
     const [overall, setOverlord] = createSignal(0);
+    const [info, setInfo] = createSignal("");
 
     createEffect(() => {
         let isit = false;
@@ -48,6 +50,8 @@ export const AccountComponent: Component<AccountProps> = (props) => {
 
     const not_show = ["5", "6"];
     createEffect(() => {
+        let s = AccountsList.filter(acc => props.acc.name.includes(acc.name))[0];
+        setInfo(s.text);
         for (let i=0; i<not_show.length; i++)
             if (props.acc.name && props.acc.name.startsWith(not_show[i]) || props.hidden)
                 setHidden(true)
@@ -90,7 +94,7 @@ export const AccountComponent: Component<AccountProps> = (props) => {
         <div class={styles.ucet} id={"main_"+props.i}>
             <div onClick={e => hide(e)} class={styles.hover + " " + styles.super}>
                 <p>MD</p>
-                <p>{props.acc.name}</p>
+                <p>{ props.acc.name }</p>
                 <p>D</p>
             </div>
             <hr/>

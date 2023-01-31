@@ -15,7 +15,9 @@ export function removeLocal<T>(array: readonly T[], index: number): T[] {
 }
 export function money(n: string) {
     let cox = parseInt(n)%100 || 0 ;
+
     if (cox < 0 ) cox *= -1;
+
     let nl = Math.floor(parseInt(n)/100) || 0;
     let ans = "";
     var edit_number = String(nl);
@@ -24,7 +26,9 @@ export function money(n: string) {
      ans = edit_number.substring(i-3, i) + "\u00a0" + ans;
     }
     if (n.length < 1 || n.trim() == "0") return "";
-    return ans.trim()+"."+cox+String.fromCharCode(160)+",-";
+    return ans.trim()+"."+
+        Math.floor((cox%100)/10)+cox%10
+        String.fromCharCode(160)+",-";
 }
 
 export function money_pre(n: string) {

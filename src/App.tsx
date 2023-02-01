@@ -79,7 +79,7 @@ const App: Component = () => {
     }
     async function load(e: Event) {
         let x = await navigator.clipboard.readText();
-        let list = x.trim().split(";\n").map(x => {
+        let list = x.split(";\n").filter(x => x.length > 4).map(x => {
             let y = x.split(", ");
             let [cost, decimal] = y[0].split(".");
 
@@ -110,8 +110,8 @@ const App: Component = () => {
         <div class={theme() ? styles.body : styles.body_dark}>
             <section class={theme() ? styles.rozvaha : styles.rozvaha+" "+styles.white}>
                 <h1>
-                    <button onClick={load}>&#9997;</button> {/* import */}
-                    <button onClick={expo}>&#9995;</button> {/* export */}
+                    <button onClick={load}>Load &#9997;</button> {/* import */}
+                    <button onClick={expo}>Copy &#9995;</button> {/* export */}
                     {/* Operace: &nbsp; */}
                     <button class={theme() ? "" : "white_btn"} onClick={() => setTheme(!theme()) }>
                         {theme() ? "dark" : "white"}

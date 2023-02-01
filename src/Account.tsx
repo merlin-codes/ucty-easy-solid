@@ -2,7 +2,7 @@ import { Accessor, Component, createEffect, createSignal, For } from "solid-js"
 import { Account, AccountSides, OT } from "./type"
 import styles from './App.module.css';
 import { money } from "./util";
-import { AccountsList } from './datalist';
+import { AccountsList, AccountPre } from './datalist';
 
 type AccountProps = {
     acc: Account,
@@ -50,7 +50,9 @@ export const AccountComponent: Component<AccountProps> = (props) => {
 
     const not_show = ["5", "6"];
     createEffect(() => {
-        let s = AccountsList.filter(acc => props.acc.name.includes(acc.name))[0];
+        let s = AccountsList.filter(
+            (acc: AccountPre) => props.acc.name.includes(props.acc.name)
+        )[0];
         setInfo(s.text);
         for (let i=0; i<not_show.length; i++)
             if (props.acc.name && props.acc.name.startsWith(not_show[i]) || props.hidden)

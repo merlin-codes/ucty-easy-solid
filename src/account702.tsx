@@ -65,18 +65,18 @@ export const Account702: Component<AccountProps> = (props) => {
     }
 
     return (
-        <div class={styles.ucet+" "+(props.theme ? "":styles.white)} id="main_suck">
+        <div class={styles.ucet+" "+styles.just_suck+" "+(props.theme ? "":styles.white)} id="main_suck">
             <div class={styles.super}>
                 <p>MD</p>
                 <p>702</p>
                 <p>D</p>
             </div>
             <hr/>
-            <div class={styles.high}>
+            <div class={styles.high+" "+styles.a7}>
                 <div class={styles.sub}>
                     <For each={acp().md}>
                         {(md, _) => (
-                            <div class={styles.row}>
+                            <div class={styles.row+" "+styles.a7auto}>
                                 <p>{md.name})&nbsp;</p>
                                 <p>&nbsp;{money(String(md.cost))}</p>
                             </div>
@@ -84,10 +84,10 @@ export const Account702: Component<AccountProps> = (props) => {
                     </For>
                 </div>
                 <div class={styles.grade}></div>
-                <div class={styles.sub + ""}>
+                <div class={styles.sub+" "+styles.h2}>
                     <For each={acp().d}>
                         {(d, _) => (
-                            <div class={styles.row}>
+                            <div class={styles.row+" "+styles.a7auto}>
                                 <p>{d.name})&nbsp;</p>
                                 <p>&nbsp;{money(String(d.cost))}</p>
                             </div>

@@ -230,3 +230,17 @@ input, button {
 .hover {
     cursor: pointer;
 }
+.just_suck {
+    max-width: 400px !important;
+}
+.just_suck .h2 .row {
+    justify-content: space-around !important;
+}
+
+.a7 .sub {
+    justify-content: space-between;
+    width: 150px;
+}
+.a7auto {
+    width: auto;
+}

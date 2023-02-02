@@ -1,2 +1,10 @@
 node_modules
 dist
+firebase.json
+.firebase/
+.firebasesrc
+.gitignore
+.git
+dist/
+firebase.json
+pnpm-lock.json
